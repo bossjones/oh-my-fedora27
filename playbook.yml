@@ -36,8 +36,8 @@
         name: dnf-plugins-core
         state: present
 
-    # - name: install docker repository
-    #   command: curl -L https://download.docker.com/linux/fedora/docker-ce.repo > /etc/yum.repos.d/docker-ce.repo; dnf update -y
+    - name: install docker repository
+      shell: 'curl -L https://download.docker.com/linux/fedora/docker-ce.repo > /etc/yum.repos.d/docker-ce.repo; dnf update -y'
 
     - name: make sure docker from distro is not installed
       dnf:
@@ -69,6 +69,39 @@
     # sudo gpasswd -a $USER docker
     # add to sudoers: %adm    ALL=(ALL)       NOPASSWD: /usr/bin/docker
 
+    - name: "Enable service docker, and not touch the running state"
+      service:
+        name: docker
+        enabled: yes
+
+    - name: "Start service docker"
+      service:
+        name: docker
+        state: started
+
+    # - name: "Add serve alias for foo user"
+    #   lineinfile:
+    #     dest=/home/vagrant/.bash_profile
+    #     line="alias docker='sudo /usr/bin/docker'"
+    #     owner=vagrant
+    #     regexp='^alias docker='sudo /usr/bin/docker'$'
+    #     state=present
+    #     insertafter=EOF
+    #     create=True
+
+    - name: "Add serve alias for foo user"
+      shell: 'gpasswd -a vagrant docker'
+      become: yes
+      run_once: yes
+
+    # Add the user 'james' with a bash shell, appending the group 'admins' and 'developers' to the user's groups
+    - name: "Add vagrant user to docker group"
+      user:
+        name=vagrant
+        shell=/bin/bash
+        groups=adm,tty,audio,docker
+        append=yes
+
     - name: Fail if Ansible is ancient
       fail: msg="We need Ansible >= 2.0. Please update your kit. 'pip install -U Ansible'"
       when: ansible_version.major < 2
@@ -82,7 +115,9 @@
        - null.yml
 
     - name: pre install system ruby
-      dnf: name={{item}} state=present
+      dnf:
+        name={{item}}
+        state=present
       with_items:
         - ruby
 

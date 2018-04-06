@@ -1,6 +1,8 @@
 ---
 - name: install cli tools
-  dnf: name={{item}} state=present
+  dnf:
+    name={{item}}
+    state=present
   with_items:
     - iftop
     - bmon

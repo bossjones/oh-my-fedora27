@@ -2,6 +2,8 @@
 ---
 
 - name: Install virtualenv and virtualenvwrapper
+  environment:
+    PATH: '/home/vagrant/go/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/go/bin:/home/vagrant/.local/bin:/home/vagrant/bin'
   become: yes
   become_method: sudo
   pip: name={{ item }}
@@ -36,6 +38,8 @@
   pip: name=numpy
        state=present
        executable=pip3
+  environment:
+    PATH: '/home/vagrant/go/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/go/bin:/home/vagrant/.local/bin:/home/vagrant/bin'
 
 - name: configure pythonrc
   template: src="home/{{base_vars.USER}}/pythonrc.j2"
@@ -56,3 +60,5 @@
   become_method: sudo
   args:
     executable: /bin/bash
+  environment:
+    PATH: '/home/vagrant/go/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/go/bin:/home/vagrant/.local/bin:/home/vagrant/bin'

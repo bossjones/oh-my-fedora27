@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-box_ip = "192.168.33.10"
+box_ip = '192.168.33.10'
 
 $script = <<SCRIPT
 echo installing base dependencies
@@ -47,14 +47,14 @@ cd /root; \
 [ -d /root/bcc ] || git clone https://github.com/iovisor/bcc;
 SCRIPT
 
-Vagrant.configure("2") do |config|
+Vagrant.configure('2') do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "fedora/27-cloud-base"
+  config.vm.box = 'fedora/27-cloud-base'
 
-  config.vm.network "private_network", ip: box_ip
+  config.vm.network 'private_network', ip: box_ip
 
- # set auto_update to false, if you do NOT want to check the correct
+  # set auto_update to false, if you do NOT want to check the correct
   # additions version when booting this machine
   config.vbguest.auto_update = true
 
@@ -62,38 +62,50 @@ Vagrant.configure("2") do |config|
   config.vbguest.no_remote = false
 
   # source: http://stackoverflow.com/questions/17845637/how-to-change-vagrant-default-machine-name
-  config.vm.define "oh_my_fedora27" do |oh_my_fedora27|
+  config.vm.define 'oh_my_fedora27' do |oh_my_fedora27|
   end
   config.vm.provider :virtualbox do |vb|
-      vb.gui = false
-      vb.name = 'oh_my_fedora27'
+    vb.gui = false
+    vb.name = 'oh_my_fedora27'
 
-      # user modifiable memory/cpu settings
-      vb.memory = 6048
-      vb.cpus = 2
-      vb.customize ["modifyvm", :id, "--cpuexecutioncap", "75"]
-      vb.customize ["modifyvm", :id, "--chipset", "ich9"]
+    # user modifiable memory/cpu settings
+    vb.memory = 6048
+    vb.cpus = 4
+    vb.customize ['modifyvm', :id, '--cpuexecutioncap', '75']
+    vb.customize ['modifyvm', :id, '--chipset', 'ich9']
+
+    # SOURCE: https://github.com/mitre/unfetter-mediawiki-vagrant/blob/master/Vagrantfile
+    # SOURCE: https://serverfault.com/questions/74672/why-should-i-enable-io-apic-in-virtualbox?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+    vb.customize ['modifyvm', :id, '--ioapic', 'on'] # Bug 51473
+    # Speed up dns resolution in some cases
+    vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
+    vb.customize ['modifyvm', :id, '--natdnsproxy1', 'on']
+    # Prevent clock drift, see http://stackoverflow.com/a/19492466/323407
+    vb.customize ['guestproperty', 'set', :id, '/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold', 10_000]
+
+    vb.customize ['modifyvm', :id, '--usb', 'on']
+    vb.customize ['modifyvm', :id, '--audio', 'coreaudio', '--audiocontroller', 'ac97' ]
   end
 
   public_key = ENV['HOME'] + '/dev/vagrant-box/fedora/keys/vagrant.pub'
 
-  if Vagrant.has_plugin?("vagrant-hostmanager")
-      config.hostmanager.enabled = true
-      config.hostmanager.manage_host = true
+  if Vagrant.has_plugin?('vagrant-hostmanager')
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
   end
 
-    # Vagrant can share the source directory using rsync, NFS, or SSHFS (with the vagrant-sshfs
+  # Vagrant can share the source directory using rsync, NFS, or SSHFS (with the vagrant-sshfs
   # plugin). Consult the Vagrant documentation if you do not want to use SSHFS.
-  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder '.', '/vagrant', disabled: true
   # config.vm.synced_folder ".", "/home/vagrant/devel", type: "sshfs", sshfs_opts_append: "-o nonempty"
 
   # install sysadmin basics
-  # config.vm.provision "shell", inline: $script
-  # config.vm.provision "shell", inline: $tools_provision
+  # config.vm.provision 'shell', inline: $script
+  # config.vm.provision 'shell', inline: $tools_provision
 
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbook.yml"
-    ansible.verbose = "-v"
+  config.vm.provision 'ansible' do |ansible|
+    ansible.playbook = 'playbook.yml'
+    ansible.verbose = '-v'
     # ansible.sudo = true
     ansible.host_key_checking = false
     ansible.limit = 'all'
@@ -106,17 +118,17 @@ Vagrant.configure("2") do |config|
   config.vm.boot_timeout = 400
 
   # network
-  config.vm.network "public_network", :bridge => 'en0: Wi-Fi (AirPort)'
-  config.vm.network "forwarded_port", guest: 19360, host: 1936
-  config.vm.network "forwarded_port", guest: 139, host: 1139
-  config.vm.network "forwarded_port", guest: 8081, host: 8881
-  config.vm.network "forwarded_port", guest: 2376, host: 2376
-  config.vm.network "forwarded_port", guest: 1999, host: 19999
+  config.vm.network 'public_network', bridge: 'en0: Wi-Fi (AirPort)'
+  config.vm.network 'forwarded_port', guest: 19_360, host: 1936
+  config.vm.network 'forwarded_port', guest: 139, host: 1139
+  config.vm.network 'forwarded_port', guest: 8081, host: 8881
+  config.vm.network 'forwarded_port', guest: 2376, host: 2376
+  config.vm.network 'forwarded_port', guest: 1999, host: 19_999
 
   # ssh
-  config.ssh.username = "vagrant"
-  config.ssh.host = "127.0.0.1"
-  config.ssh.guest_port = "2222"
+  config.ssh.username = 'vagrant'
+  config.ssh.host = '127.0.0.1'
+  config.ssh.guest_port = '2222'
   config.ssh.private_key_path = ENV['HOME'] + '/dev/bossjones/oh-my-fedora27/keys/vagrant_id_rsa'
   config.ssh.forward_agent = true
   config.ssh.forward_x11 = true
