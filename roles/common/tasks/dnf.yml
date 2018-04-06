@@ -1,0 +1,28 @@
+---
+
+- name: install some small, awesome packages to boost your life
+  dnf: name={{item}} state=present
+  with_items:
+    - autoconf
+    - cloc
+    - curl
+    - htop
+    - make
+    - pinfo
+    - proxychains
+    - ranger
+    - rlwrap
+    - the_silver_searcher
+    - tmux
+    - vim
+    - vim-enhanced
+    - ruby
+
+- name: install ctop
+  shell: |
+    curl -L 'https://github.com/bcicen/ctop/releases/download/v0.4.1/ctop-0.4.1-linux-amd64' > /usr/local/bin/ctop
+    chmod +x /usr/local/bin/ctop
+  become: yes
+  become_method: sudo
+  args:
+    executable: /bin/bash
