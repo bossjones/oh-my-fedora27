@@ -16,7 +16,7 @@ vagrant-up:
 	vagrant up
 
 vagrant-ssh:
-	vagrant ssh
+	ssh -X -F ssh_config_vagrant vagrant@oh_my_fedora27
 
 vagrant-destroy:
 	vagrant destroy
@@ -25,7 +25,10 @@ vagrant-halt:
 	vagrant halt
 
 vagrant-config:
-	vagrant ssh-config
+	vagrant ssh-config > ssh_config_vagrant
+
+vagrant-ssh-x11:
+	vagrant ssh -- -X
 
 serverspec-diff:
 	cat serverspec_things_to_check_for.txt

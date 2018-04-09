@@ -91,6 +91,7 @@
     "digital-ocean-keys": true,
     "orig-ks-digial-ocean": true,
     "temp": true,
-    "local-configure.yml": true
+    "local-configure.yml": true,
+    "ssh_config_vagrant": true
   }
 }
