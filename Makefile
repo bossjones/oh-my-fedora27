@@ -39,6 +39,9 @@ serverspec:
 serverspec-install:
 	bundle install --path .vendor
 
+make-host-file:
+	echo "localhost ansible_connection=local ansible_python_interpreter=${_PATH_TO_PYTHON}" > hosts.private
+
 download-roles:
 	ansible-galaxy install -r install_roles.txt --roles-path roles/
 
