@@ -45,6 +45,9 @@ make-host-file:
 download-roles:
 	ansible-galaxy install -r install_roles.txt --roles-path roles/
 
+download-roles-advanced:
+	ansible-galaxy install -r requirements.yml --roles-path roles/
+
 install-cidr-brew:
 	pip install cidr-brewer
 

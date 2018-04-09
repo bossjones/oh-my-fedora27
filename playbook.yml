@@ -11,6 +11,14 @@
     # sudo mkdir -p /etc/dnf/vars
     # echo 27 | sudo tee /etc/dnf/vars/docker_releasever
     # sudo sed -i 's/\$releasever/$docker_releasever/g' /etc/yum.repos.d/docker-ce.repo
+    - role: willshersystems.sshd
+      sshd:
+        PubkeyAuthentication: yes
+        PasswordAuthentication: no
+        PermitRootLogin: no
+        GSSAPIAuthentication: no
+        X11DisplayOffset: 10
+        X11UseLocalhost: no
 
     - role: motd
     - role: bossjones-firewalld

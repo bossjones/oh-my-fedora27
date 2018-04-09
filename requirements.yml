@@ -1,0 +1,5 @@
+- src: git+https://github.com/willshersystems/ansible-sshd.git
+  version: "0.5.1"
+  name: ansible-sshd
+- src: mjanser.powerline
+- src: joshualund.golang
